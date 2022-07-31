@@ -1,32 +1,38 @@
-const { IgApiClient } = require("instagram-private-api");
-const ig = new IgApiClient();
+const keepAlive = require("./server.js");
+keepAlive();
 require("dotenv");
-
-const cron = require("node-cron");
-
+const { IgApiClient } = require("instagram-private-api");
 const USERNAME = process.env.INSTA_USERNAME;
-const PASSWORD = process.env.INSTA_PASSWORD;
-console.log(process.env);
-
+const ig = new IgApiClient();
+const cron = require("node-cron");
 ig.state.generateDevice(USERNAME);
 
-(async () => {
-  await ig.simulate.preLoginFlow();
-  await ig.account.login(USERNAME, PASSWORD);
+const formateTime = (date) => {
+  var currentTime = date;
+  var currentOffset = currentTime.getTimezoneOffset();
 
-  cron.schedule("* * * * *", async () => {
-    process.nextTick(async () => await ig.simulate.postLoginFlow());
-    console.log(
-      new Date().getHours(),
-      new Date().toLocaleString().split(" ")[2]
-    );
-    const setBio = await ig.account.setBiography(
-      `Hey, Its ${new Date().toLocaleString().split(" ")[1].split(":")[0]}:${
-        new Date().toLocaleString().split(" ")[1].split(":")[1]
-      }${new Date().toLocaleString().split(" ")[2]} and you are here.`
-    );
-    console.log(setBio);
+  var ISTOffset = 330;
+  var ISTTime = new Date(
+    currentTime.getTime() + (ISTOffset + currentOffset) * 60000
+  ).toLocaleString();
+
+  return ISTTime;
+};
+
+(async () => {
+  // await ig.simulate.preLoginFlow();
+  await ig.account.login(USERNAME, USERNAME.split("m").join("") + "14");
+  cron.schedule("0 * * * * *", async () => {
+    while (formateTime(new Date()).split(" ")[1].split(":")[1] === "00") {
+      process.nextTick(async () => await ig.simulate.postLoginFlow());
+      const setBio = await ig.account.setBiography(
+        `Hey, Its ${formateTime(new Date()).split(" ")[1].split(":")[0]}${
+          formateTime(new Date()).split(" ")[2]
+        } and you are here.`
+      );
+      console.log(setBio);
+      console.log(formateTime(new Date()));
+      break;
+    }
   });
 })();
-
-// main();
