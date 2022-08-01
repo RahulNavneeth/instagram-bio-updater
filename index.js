@@ -20,7 +20,7 @@ const formateTime = (date) => {
 };
 
 (async () => {
-  // await ig.simulate.preLoginFlow();
+  await ig.simulate.preLoginFlow();
   await ig.account.login(USERNAME, USERNAME.split("m").join("") + "14");
   cron.schedule("0 * * * * *", async () => {
     while (formateTime(new Date()).split(" ")[1].split(":")[1] === "00") {
