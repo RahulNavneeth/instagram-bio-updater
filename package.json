@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "forever": "^4.0.3",
+    "instagram-private-api": "^1.45.3",
+    "instagram-web-api": "^2.2.2",
+    "node-cron": "^3.0.1",
+    "nodemon": "^2.0.18"
+  }
+}
