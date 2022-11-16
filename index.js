@@ -2,7 +2,7 @@ const keepAlive = require("./server.js");
 keepAlive();
 require("dotenv");
 const { IgApiClient } = require("instagram-private-api");
-const USERNAME = process.env.INSTA_USERNAME;
+const USERNAME = process.env.USERNAME;
 const PASSWORD = process.env.PASSWORD;
 const ig = new IgApiClient();
 const cron = require("node-cron");
